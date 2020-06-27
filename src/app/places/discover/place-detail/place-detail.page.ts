@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { NavController } from '@ionic/angular';
+import { NavController, ModalController } from '@ionic/angular';
 import { Place } from '../../places.model';
 import { PlacesService } from '../../places.service';
+import { CreateBookingComponent } from 'src/app/bookings/create-booking/create-booking.component';
 
 @Component({
   selector: 'app-place-detail',
@@ -14,7 +15,9 @@ export class PlaceDetailPage implements OnInit {
   constructor(
     private route: ActivatedRoute,
      private placesService: PlacesService,
-      private navCtrl: NavController) { }
+      private navCtrl: NavController,
+      private modalCtrl: ModalController
+      ) { }
   ngOnInit() {
     this.route.paramMap.subscribe(pMap =>{
       if(!pMap.has('placeId')){
@@ -26,7 +29,17 @@ export class PlaceDetailPage implements OnInit {
   }
 
   onBookPlace(){
- //this.router.navigateByUrl("places/tabs/discover");
- this.navCtrl.navigateBack('places/tabs/discover');
+ //this.navCtrl.navigateBack('places/tabs/discover');
+    this.modalCtrl.create({component: CreateBookingComponent,
+    componentProps:{selectedPlace: this.place}})//passing data(place) to the modal (CreateBookingComponent)
+    .then(modalEl =>{
+      modalEl.present();
+      return modalEl.onDidDismiss();
+    })
+    .then( resultData =>{
+      console.log(resultData.data, resultData.role);//get the passed data
+      if(resultData.role === 'confirm')
+        console.log('BOOKED!');
+    });
 }
 }
