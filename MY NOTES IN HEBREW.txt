@@ -1,0 +1,404 @@
+
+new project:
+cmd
+ionic start
+blank
+----
+ionic generate page PAGE_NAME
+ionic generate page PAGE_NAME/SUB_PAGE
+
+cd \project name\
+ionic serve להריץ
+או ng serve
+
+BINDING
+1.[personList]
+
+2.event binding
+(click)="func()"
+
+3.{{person}}
+
+4. 2-way_bind:
+[(ngModel)}="propertyOfTheClass" 
+==============================
+ככה באנגולר אבל עדיף להשתמש בionic generate page :
+new component
+at angular: ng g c nameComponent
+or: ng generate component
+
+at ionic: ionic generate
+page
+================================
+פה לסדר את הניווט וכן מי העמוד ראשי:
+C:\Users\Efi\Desktop\ionic\bookingPlaces\src\app\app-routing.module.ts
+
+hard coded routes first קודם יהיה למשל 'new' ואחכ ':placeId'
+
+use  <ion-router-outlet></ion-router-outlet> 
+not:  <router-outlet><-router-outlet> like all angular. בגלל עיצוב עמוד ועוד
+
+להוסיף לאלמנט הטמל ניווט בלחיצה:
+  [routerLink]="'/places/tabs/discover/' + place.id"
+
+אופציונאלי:
+              routerDirection="forward"
+או backward בהתאם
+
+חזרה אחורה דרך הJS:
+constructor(private router: Router) { }
+this.router.navigateByUrl("places/tabs/discover");
+
+אבל עדיף(כדי שיהי ברור אם קדימה או אחורה:
+constructor(private router: Router, private navCtrl: NavController) { }
+this.navCtrl.navigateBack('places/tabs/discover');
+(אפשר גם לשלוח מערך)
+==========
+הרצה על אנדרואיד:
+ng build
+ionic capacitor add android
+
+after changes:
+ng build
+ionic capacitor copy android
+
+ionic capacitor run android 
+זה קיצור של 2 הפקודות הקודמות וגם פותח באנדרואיד סטודיו
+
+ריצה עם שמירת שינויים אוטומטית בלי צורך לעשות שוב build:
+ionic capacitor run android -l
+
+אבל רק ככה זה עובד לי:
+ionic capacitor run android -l --address=192.168.43.195
+
+כדי להשיג IP :  
+ipconfig
+נמצא בIPv4 Address.
+
+כדי לעשות דיבאג בריצה על המכשיר עצמו
+chrome://inspect/
+ןאז ללחוץ inspect
+==================================
+TABS
+https://ionicframework.com/docs/api/tabs
+
+<ion-tabs>
+    <ion-tab-bar slot="bottom">
+      <ion-tab-button tab="discover">
+        <ion-label>Discover</ion-label>
+        <ion-icon name="search"></ion-icon>
+      </ion-tab-button>
+      <ion-tab-button tab="offers">
+        <ion-label>Offers</ion-label>
+        <ion-icon name="card"></ion-icon>
+      </ion-tab-button>
+
+    </ion-tab-bar>
+  </ion-tabs>
+=============================
+הוספת קובץ בשביל מודל הנתונים:
+Place.model.ts
+דוג:
+export class Place {
+    constructor(
+            public id: String,
+            public title: string,
+            public description: string,
+            public imageUrl:string,
+            public price: number)
+        {}
+}
+============================
+חילוץ ID מתןך הURL:
+ public place:Place;
+  constructor(
+    private route: ActivatedRoute,
+     private placesService: PlacesService,
+      private navCtrl: NavController) { }
+  ngOnInit() {
+    this.route.paramMap.subscribe(pMap =>{
+      if(!pMap.has('placeId')){
+        this.navCtrl.navigateBack('/places/tabs/discover');
+        return;
+      }
+      this.place = this.placesService.getPlace(pMap.get('placeId'));
+     });
+  }
+
+=================================
+MENU - SIDE BAR
+מוסיפים בapp.component.html :
+בתור אח של זה:
+ <ion-router-outlet main></ion-router-outlet>
+
+את זה:
+<ion-menu side="start" menuId="m1">
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>
+          PairBnB
+        </ion-title>
+      </ion-toolbar>
+    </ion-header>
+
+      <ion-content>
+        <ion-list>
+          <ion-item lines="none">
+            <ion-icon name="business" slot="start"></ion-icon>
+            <ion-label>Discover Places</ion-label>
+          </ion-item>
+          <ion-item lines="none">
+            <ion-icon name="checkbox-outline" slot="start"></ion-icon>
+            <ion-label>Your Bookings</ion-label>
+          </ion-item>
+          <ion-item lines="none">
+            <ion-icon name="exit" slot="start" ></ion-icon>
+            <ion-label >Logout</ion-label>
+          </ion-item>
+       </ion-list>
+      </ion-content>
+
+  </ion-menu>
+
+ואז בעמוד שרוצים שיהיה את הפתיחה שלו. להוסיף: (לשים לב לID אם יש כמה תפריטים כאלה)
+בתוך הTOOLBAR :
+ <ion-buttons slot="start">
+      <ion-menu-button menu="m1"></ion-menu-button>
+    </ion-buttons>
+============================================================
+דרך אחרת לפתוח תפריט מתוך  הקוד עם כפתור (פחות שימושי):
+HTML:
+<ion-buttons slot="start">
+      <ion-button (click)="openMenu()">Menu</ion-button>
+    </ion-buttons>
+
+JS:
+  constructor(, private menuCtrl: MenuController) { }
+
+ openMenu(){
+    this.menuCtrl.toggle("m1");// close or open the menu
+  }
+================================================================
+כדי שבלחיצה על שורה בתפריט, הוא גם ייסגר, מוסיפים מסביב לכל ITEM בLIST:
+ <ion-menu-toggle menu="m1"></ion-menu-toggle>
+==================================================
+AUTH
+guard:
+סוג של סרוויס שרק אם הוא מחזיר TRUE אז הניווט לעמוד יכול לקרות
+מימוש:
+ionic generate guard
+לממש את המתודה התאימה ובהתאם לתנאי להחזיר טרו או פאלז.
+שימוש:להוסיף בקןבץ הROUTING :
+{
+    path: 'places',
+    loadChildren: () => import('./places/places.module').then( m => m.PlacesPageModule),
+    canLoad:[AuthGuard]
+  },
+
+=========================================
+OPENING A FULL SCREEN MODAL
+ליצור קומפוננט חדש לא משנה איזה תיקיה (לא PAGE)
+ionic g c PATH/NAME
+כדי לפתוח:
+ constructor(,
+      private modalCtrl: ModalController
+      ) { }
+
+this.modalCtrl.create({component: CreateBookingComponent,
+    componentProps:{selectedPlace: this.place}})//passing data(place) to the modal (CreateBookingComponent)
+    .then(modalEl =>{
+      modalEl.present();
+      return modalEl.onDidDismiss();
+    })
+    .then( resultData =>{
+      console.log(resultData.data, resultData.role);//get the passed data
+      if(resultData.role === 'confirm')
+        console.log('BOOKED!');
+    });
+
+כדי " למשוך את המיגע לתוך המודל, יש להוסיף:
+  @Input() selectedPlace: Place;
+
+ובנוסף יש להוסיף את הקומפוננט הזה למודול שבו רוצים לפתוח, בתוך declaretions וגם entryComponents:
+  declarations: [PlaceDetailPage, CreateBookingComponent],
+  entryComponents:[CreateBookingComponent]
+
+סגירה: (הפרמטרים אופציונאליים, הראשון זה אובייקט אם רוצים להעביר מידע, 
+השני זה מחרוזת אם רוצים להגיד איזה פעולה בוצעה למשל ביטול או אישור,
+השלישי זה הID של המודל למקרה שיש כמה פתוחים ורוצים לסגור אחד מהם( גם בפתיחה אפשרי )
+    this.modalCtrl.dismiss({message: 'this is a dummy message'}, 'confirm');
+
+=========================================================
+IONIC COMPONENTS
+SLOT
+זה המיקום של האלמנט (בתוך האלמנט האבא?)
+למשל
+slot="start"
+slot="end"
+=======
+GRID
+ <ion-grid>
+עובדת בתור שורות שהגובה נקבע כמו הגובה של הילד הכי גבוה בתוך השורה <ion-row>. חייב לפחות שורה אחת
+בתוך יש עמודות <ion-col>
+יש לטבלה 12 עמודות ואפשר לקבוע כמה תופסת כל עמודה למשל size="4" יתפוס שליש מהטבלה
+size כמה עמודות הCOL תופס
+offset="2" מספר עמודות ריקות משמאל.אפשר למרכז ככה את מיקום הטבלה
+<ion-row class="ion-align-items-center"> כדי למקם את התוכן באמצע השורה(אנכית) במקרה שהשורה גבוהה יותר מהתוכן
+  <ion-row class="ion-justify-content-center">  מיקום של כל הטבלה באמצע
+size-sm offset-sm הגדרת גודל בהתאם למסך sm,ms,xl וכו
+GRID VS LIST
+list
+כשצריכים תוכן מלמעלה ללמטה. פחות מתעסקים ברוחב. בתוך רשימה הילדים הישירים חייבים להיות ion-item ןאז בפנים מה שרוצים.
+grid 
+אפשר לעצב בהתאם לרוחב. אפשר לשים רשימב בתוך הטבלה. חייבלהיות קודם שורה, בפנים עמודה ואז מה שרוצים.
+=====
+LABEL
+מומלץ כדי לעטוף סוגים של טקסט כמו h1, p . הLABEL בתוך ITEM
+===
+הITEM לא חייב להיו בתוך רשימה. 
+וכן הוא יכול להיות מעטפת לשורות קלט +תווית ומסדר אותם בצורה יותר טובה:
+ <ion-item>
+    <ion-label position="floating">Email</ion-label>
+    <ion-input></ion-input>
+  </ion-item>
+======
+<ion-text> בשביל עיצוב פשוט של טקסט כמו צבע, מחליף את <p>
+בשביל לעטוף כמה סוגי טקסט נתשמש בLABEL
+==========
+ION-ITEM-SLIDING
+פריט ברשימהה שאפש להחליק לצד ואז נתפחות אופציות
+<ion-list>
+    <  ion-item-sliding #elementId>
+    <ion-item    >
+    </ion-item>
+    <ion-item-options (click)="onEdit(elementId)">
+      <ion-item-option>
+        <ion-icon name="pencil-outline" slot="icon-only"></ion-icon>
+      </ion-item-option>
+    </ion-item-options>
+  </ion-item-sliding>
+  </ion-list>
+קינון בסדר הנל ^
+============
+ION-VIRTUAL-SCROLL
+ברשימות ארוכות זה משמש כדי לטעון רק חלק מהרשימה כדי לא להאט את האפליקציה
+
+במקום ion-list כותבים ion-virtual-scroll
+
+<ion-virtual-scroll [items]="listName" approxItemHeight="70px">
+  <ion-item *virtualItem="let itemName">
+    {{itemName.title}}
+  </ion-item>
+</ion-virtual-scroll>
+
+approxItemHeight אופציונאלי. זה בערך הגובה של כל פריט ברשימה(לבדוק דרך הדפדפן) כדי שיידע כמה מהרשימה לטעון
+====================
+<ion-img> 
+זו האופציה הממומלצת לתמונות כי זה טוען את התמונה רק כשבאמת צריך (lazy loading(
+
+====
+ION-SEGMENT
+כמו TABS אבל באותו עמוד
+
+ <ion-segment value="all" (ionChange)="onFilterUpdate($event)">
+    <ion-segment-button value="all" checked> All Places </ion-segment-button>
+    <ion-segment-button value="bookable"> Bookable Places </ion-segment-button>
+  </ion-segment>
+
+onFilterUpdate(event: CustomEvent<SegmentChangeEventDetail>){
+    console.log(event.detail);
+  }
+============
+SPINNER
+  <ion-spinner color = "primary" *ngIf="isLoading"class="ion-margin" ></ion-spinner>
+גלגל טעינה שמוצג כל עוד העמוד לא נטען או כשבקשה נשלחת
+======
+LoadingController
+מציג הודעה שעושה OVERLAY על המסך עד שהוא נטען
+(יותר מתקדם מהSPINNER)
+
+constructor(
+    private loadingCtrl: LoadingController) { }
+
+onLogin(){
+    this.isLoading = true;
+    this.authService.login();
+
+    this.loadingCtrl
+    .create({keyboardClose:true, message:'Logging in...'})
+    .then(loadingEl =>{
+      loadingEl.present();
+
+      setTimeout(() => {
+        this.router.navigateByUrl('/places/tabs/discover');
+        loadingEl.dismiss();
+        this.isLoading = false;
+      },3000);
+
+    });
+פה זה דוגמה שמדמה בקשה לשרת אבל אין בקשה לכן הtimeoutt 
+===============
+ActionSheetController
+מקפיץ רשימה של אופציות ללחיצה, מתחתית המסך
+ constructor(
+      private actionSheetController:ActionSheetController
+      ) { }
+
+onBookPlace(){
+    this.actionSheetController.create(
+      {
+        header:'Choose an action',
+        buttons:[
+          {
+            text:'Select Date',
+            handler: () =>{
+              this.openBookingModal('select');
+            }
+          },
+          {
+            text:'Random Date',
+            handler: () =>{
+              this.openBookingModal('random');
+            }
+          },
+          {
+            text:'Cancel',
+            role:'cancel'
+          }, 
+        ]
+      }).then( actioSheetEl => {
+        actioSheetEl.present();
+      })
+}
+
+==========================================
+בכללי יש עוד controllers של ionic בכולם עושים inject דרך הconstructor ואז create ואז present. הכל באתר של איוניק
+https://ionicframework.com/docs/components
+
+
+=========================================================================================================
+							S T Y L I N G      
+=========================================================================================================
+https://ionicframework.com/docs/theming/basics
+
+בקובץ הזה ניתן להגדיר צבעים לערכת נושא הכללית ע"י הגדרת משתני CSS
+C:\...\bookingPlaces\src\theme\variables.scss
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
