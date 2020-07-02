@@ -9,5 +9,6 @@
     <ion-label position="floating">Email</ion-label>
     <ion-input></ion-input>
   </ion-item>
-  <ion-button color="primary" (click)="onLogin()"  class="ion-margin">Login</ion-button>
+  <ion-spinner color = "primary" *ngIf="isLoading"class="ion-margin" ></ion-spinner>
+  <ion-button color="primary" (click)="onLogin()" *ngIf="!isLoading"  class="ion-margin">Login</ion-button>
 </ion-content>
