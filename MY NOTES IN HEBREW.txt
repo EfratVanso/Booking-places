@@ -384,6 +384,18 @@ https://ionicframework.com/docs/theming/basics
 בקובץ הזה ניתן להגדיר צבעים לערכת נושא הכללית ע"י הגדרת משתני CSS
 C:\...\bookingPlaces\src\theme\variables.scss
 
+ניתן באותו קובץ להגדיר צבעים שונים עבור כל פלטפורמה למשל:
+.ios{
+}
+
+כדי לא לשנות רק אחד מהצבעים ואזז זה לא יתאים. אפשר בקישור לבחור צבעי בסיס והאתר מייצר קוד בשביל כל משתני הCSS וניתן להדביק במקום הקוד שהיה
+https://ionicframework.com/docs/theming/color-generator
+
+בסוף הקובץ הזה ניתן להגדיר css rules
+C:\...\bookingPlaces\src\global.scss
+
+
+
 
 
 
