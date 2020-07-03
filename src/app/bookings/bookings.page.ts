@@ -10,7 +10,7 @@ import { IonItemSliding } from '@ionic/angular';
 })
 export class BookingsPage implements OnInit {
 
-  private loadedBookings: Booking[];
+   loadedBookings: Booking[];
   constructor(private bookingService:BookingService) { }
 
   ngOnInit() {

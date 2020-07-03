@@ -394,7 +394,18 @@ https://ionicframework.com/docs/theming/color-generator
 בסוף הקובץ הזה ניתן להגדיר css rules
 C:\...\bookingPlaces\src\global.scss
 
+ניתן להגדיר משתנים של איוניק עבור כל הTOOLBAR למשל:
+  --ion-toolbar-background: var(--ion-color-primary,#1233b5);
+  --ion-toolbar-color: var(--ion-color-primary-contrast, #ffffff);
+  
+הפונקציה VAR מקבלת 2 משתנים:
+הראשון לוקח את הערך של הצבע מהמשתנה שנשלח לפונקציה
+השני אופציונאלי, אם הפרמטר הראשון לא מוגדר אז יש צבע ברירת מחדל
+==========================================
+OfferItemComponent
 
+העברת מידע מההורה לילד:
+  <app-offer-item [offerr]="offer"></app-offer-item>
 
 
 
