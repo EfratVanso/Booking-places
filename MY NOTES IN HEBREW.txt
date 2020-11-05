@@ -2,7 +2,8 @@
 =========================================================================================================
 					סיכום דרך העבודה על פרויקט IONIC					אפרת בן אליעזר ונסו					
 =========================================================================================================
-
+לאחר ההתקנה מומלץ להתקין את התוספת Ionic Essentials
+view-> extentions ->Ionic Essentials-> install
 
 new project:
 cmd
@@ -449,9 +450,15 @@ onSubmit(form: NgForm){
     color: var(--ion-color-danger, red);
 }
 =====================================
+REACTIVE FORM
+במודול של הקונפוננט לשים ReactiveFormsModule במקום ReactiveFormsModule
+ב ts file :
+form: FormGroup;
 
+יש דוגמה בקומפוננט הזה:
+src\app\places\offers\edit-offer
 
-
+==============================
 
 
 
